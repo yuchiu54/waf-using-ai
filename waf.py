@@ -14,13 +14,9 @@ app = Flask(__name__)
 def waf():
     data = request.args.to_dict()
     url = os.getenv("ORIGIN_SERVER")
-
     if len(data) == 0 or is_malicious(data.values()):
         return "<p> bad request"
-
-    response = requests.post(url, json=data)
-    if response.status_code != 200:
-        return "<p> Fail to send request to service. Try again later"
+    return redirect(url)
 
 @app.route("/bad_request")
 def bad_request():

@@ -7,6 +7,7 @@ server.get("/", (req, res)=> {
 
 server.post("/", (req, res) => {
     console.log("Post page using node.js")
+    res.send("Receive post")
 })
 
 server.listen(3000, () => {
