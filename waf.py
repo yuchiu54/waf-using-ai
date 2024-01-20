@@ -2,7 +2,6 @@ import os
 
 from dotenv import load_dotenv
 from flask import Flask, redirect, request, url_for
-#from flask import flask_request
 import requests
 
 from detect import is_malicious
@@ -10,7 +9,7 @@ from detect import is_malicious
 load_dotenv()
 app = Flask(__name__)
 
-@app.route("/", methods=["GET"])
+@app.route("/waf", methods=["GET"])
 def waf():
     data = request.args.to_dict()
     url = os.getenv("ORIGIN_SERVER")
@@ -18,9 +17,10 @@ def waf():
         return "<p> bad request"
     return redirect(url)
 
-@app.route("/bad_request")
-def bad_request():
-    return "<p>This is a bad request"
+@app.route("/waf-shadow", methods=["GET"])
+def waf_shadow():
+   # this api will predict request data with multiple models
+   # if result is better than live one then replace it with this
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
