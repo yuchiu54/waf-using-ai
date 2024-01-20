@@ -3,5 +3,7 @@ __pycache__/
 
 .env
 
+scripts/data
+
 demo_server/node_modules
 demo_server/package-lock.json

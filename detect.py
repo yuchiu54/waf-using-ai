@@ -1,3 +1,9 @@
+
+"""
+Todo:
+    in is_malicious() get prediction scores from all the models and choose the best one as model to detect
+"""
+
 import pandas as pd    
 from sklearn import svm    
 from sklearn.feature_extraction.text import CountVectorizer    
