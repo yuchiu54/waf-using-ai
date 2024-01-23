@@ -1,9 +1,17 @@
 venv/
 __pycache__/
+*.py[cod]
+
+build/
+dist/
+
+lib/
+*.egg
+*.egg-info/
 
 .env
 
-scripts/data
+src/data
 
 demo_server/node_modules
 demo_server/package-lock.json
