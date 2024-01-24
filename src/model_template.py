@@ -25,12 +25,6 @@ class ModelTemplate():
         print(f'Mean Squared Error: {mse}')    
         self.MSE = mse
 
-    def dump(self):
-        date_id = datetime.now().strftime('%Y-%m-%d-%H:%M:%S')    
-        path = self.path + date_id + ".pkl"    
-        with open(path, "wb") as file:    
-            pickle.dump((self.model, self.MSE), file)
-
     def run(self):
         self.preprocessing()        
         self.train()        

@@ -8,7 +8,6 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 
 from src.model_template import ModelTemplate
-#from model_template import ModelTemplate
 
 class SVMModel(ModelTemplate):
     def __init__(self, data):
@@ -34,15 +33,3 @@ class SVMModel(ModelTemplate):
         model = svm.SVC(kernel='linear', C=1.0)
         model.fit(self.X_train, self.y_train)
         self.model = model
-
-    def dump(self):                          
-        date_id = datetime.now().strftime('%Y-%m-%d-%H:%M:%S')         
-        path = self.path + date_id + ".pkl"         
-        with open(path, "wb") as file:         
-            pickle.dump((self.model, self.vectorizer, self.label_encoder, self.MSE), file)
-
-if __name__ == "__main__":
-    df = pd.read_csv("data/train_data.csv")
-    template = SVMModel(df)
-    template.run()
-    template.dump()

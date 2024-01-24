@@ -10,7 +10,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
 from src.model_template import ModelTemplate
-#from model_template import ModelTemplate
 
 class RFModel(ModelTemplate):
     def __init__(self, data):
@@ -44,15 +43,3 @@ class RFModel(ModelTemplate):
         rf_classifier = RandomForestClassifier(n_estimators=100, random_state=42)
         rf_classifier.fit(self.X_train, self.y_train)
         self.model = rf_classifier
-
-    def dump(self):
-        date_id = datetime.now().strftime('%Y-%m-%d-%H:%M:%S')         
-        path = self.path + date_id + ".pkl"         
-        with open(path, "wb") as file:         
-            pickle.dump((self.model, self.vectorizer, self.label_encoder, self.MSE), file)
-
-if __name__ == "__main__":    
-    df = pd.read_csv("data/train_data.csv")    
-    template = RFModel(df)    
-    template.run()
-    template.dump()
