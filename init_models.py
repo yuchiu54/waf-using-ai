@@ -13,6 +13,10 @@ def setup_pre_trained_model(models):
         with open(f"models/live/{name}.pkl", "wb") as model_file:
             pickle.dump(model_obj, model_file)
         model_file.close()
+
+        with open(f"models/shadow/{name}.pkl", "wb") as model_file:
+            pickle.dump(model_obj, model_file)
+        model_file.close()
     print("Sucessfully setup pre-trained model")
 
 

@@ -4,44 +4,42 @@ from dotenv import load_dotenv
 from flask import Flask, redirect, request, url_for, jsonify
 import requests
 
-from src.detect import is_malicious
+#from src.detect import is_malicious
 from src.detect import Detector
+from src.train import load_models, update_models
 
 load_dotenv()
 app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def home():
-    # this api will hadle request include extracting payloads in request, 
-    data = request.args.to_dict()
-    # assigning payloads to live api and shadow api with requests
-#    response = requests.post({"http://localhost:5000/live"}, payloads = data)
-#    response = requests.post({"http://localhost:5000/shadow"}, payloads = data)
+    url = request.url
+    payloads = url.split("?")
+    response = requests.get(f"http://localhost:5000/live?{payloads}")
+    response = requests.get(f"http://localhost:5000/shadow?{payloads}")
     return "<p> home"
 
 @app.route("/live", methods=["GET"])
 def live():
-    # implement model in models folder
     data = request.args.to_dict()
     url = os.getenv("ORIGIN_SERVER")
-    if len(data) == 0 or is_malicious(data.values()):
+    detector = Detector("live")
+    if detector.detect(data.values()):
         return "<p> bad request"
-    # if not poisonous
-        # update_models
     return redirect(url)
 
 @app.route("/shadow", methods=["GET"])
 def shadow():
-   # update models
-   # performance check
-   # if performance of model is better live than update models in models folder
-   pass
+    data = request.args.to_dict()
+    detector = Detector("shadow")
+    detector.analysis(data.values())
+    return "<p> shadow"
 
 @app.route("/test", methods=["GET"])
 def test():
-    # load model
     data = request.args.to_dict()
-    if len(data) == 0 or is_malicious(data.values()):
+    detector = Detector("live")
+    if len(data) == 0 or detector.detect(data.values()):
         print("malforme payload founded")
         return "<p> bad request"
     print("pass WAF")

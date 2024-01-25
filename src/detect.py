@@ -12,39 +12,21 @@ from src.train import load_models
 from src.train import update_models
 
 class Detector:
-    def __init__(self):
+    def __init__(self, mode):
+        self.mode = mode
         self.model_names = ["svm.pkl", "rf.pkl"]
 
     def find_min_MSEs_model(self, models):
         MSEs = [model.MSE for model in models]
-        print("MSEs of models: ", MSEs)
         index = MSEs.index(min(MSEs))
         return models[index]
 
     def detect(self, payloads):
-        models = load_models(self.model_names)
-        model = find_min_MSEs_model(models)
+        models = load_models(self.mode, self.model_names)
+        model = self.find_min_MSEs_model(models)
         return model.predict(payloads)
 
-
-def predict(model, payloads):
-    return model["model"].predict(payloads)
-
-def find_min_MSEs_model(models, model_names):
-    MSEs = [model.MSE for model in models]
-    print("MSEs of models: ", MSEs)
-    index = MSEs.index(min(MSEs))
-    return {"name": model_names[index], "model": models[index]}
-
-def is_malicious(new_payloads):
-#    new_payloads is a list since a request could have multiple payloads
-
-    model_names = ["svm.pkl", "rf.pkl"]
-    model_names = ["svm.pkl"]
-    models = load_models(model_names)
-    model = find_min_MSEs_model(models, model_names)
-
-    #predict with best model
-    answer = predict(model, new_payloads)
-    update_models(model_names, new_payloads)
-    return answer
+    def analysis(self, payloads):
+        models = load_models(self.mode, self.model_names)
+        for model in models:
+            model.predict(payloads)
