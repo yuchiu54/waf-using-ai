@@ -33,3 +33,9 @@ class SVMModel(ModelTemplate):
         model = svm.SVC(kernel='linear', C=1.0)
         model.fit(self.X_train, self.y_train)
         self.model = model
+
+    def predict(self, new_payload):              
+        self.X_new = self.vectorizer.transform(new_payload)       
+        self.y_new = self.model.predict(self.X_new)         
+        values = self.label_encoder.inverse_transform(self.y_new)     
+        return True if sum(values) > 0 else False

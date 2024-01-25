@@ -33,16 +33,15 @@ def save_model(mode: str, model_type: str, model):
 
 def update_models(model_names, new_payload):    
     for name in model_names:
-        # load existing model and X and y values    
         model = load_model("live", name)
-        # load new_X and new_y values, in this case it's new payloads    
         X_new = model.vectorizer.transform(new_payload)      
         y_new = model.model.predict(X_new)    
-        # combine existing and new X and y values    
-        model.X_train = vstack([model.X_train, X_new])
-        # hstack([sparse_matrix, dense_array])
-        model.y_train = vstack([model.y_train, y_new])
-        # fit    
-        model.model.run()
-        # dump    
+        print("X_new:", X_new)
+        print("X_new:", X_new.toarray())
+        print(y_new)
+
+        model.X_train = np.concatenate([model.X_train.toarray(), X_new.toarray()])
+        model.y_train = np.concatenate([model.y_train, y_new])
+
+        model.run()
         save_model("shadow", name, model)

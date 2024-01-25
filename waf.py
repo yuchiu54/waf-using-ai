@@ -5,6 +5,7 @@ from flask import Flask, redirect, request, url_for, jsonify
 import requests
 
 from src.detect import is_malicious
+from src.detect import Detector
 
 load_dotenv()
 app = Flask(__name__)

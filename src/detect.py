@@ -11,26 +11,24 @@ from src.rf import RFModel
 from src.train import load_models
 from src.train import update_models
 
-def predict(model, payloads):
-    if model["name"] == "svm.pkl":
-        answer = svm_predict(model["model"], payloads)
-    elif model["name"] == "rf.pkl":
-        answer = rf_predict(model["model"], payloads)
-    return answer
-    
-def svm_predict(model, new_payload):
-    print("using svm")
-    X_new = model.vectorizer.transform(new_payload)
-    numerical_prediction = model.model.predict(X_new)
-    values = model.label_encoder.inverse_transform(numerical_prediction)
-    return True if sum(values) > 0 else False
+class Detector:
+    def __init__(self):
+        self.model_names = ["svm.pkl", "rf.pkl"]
 
-def rf_predict(model, new_payload):
-    print("using rf")
-    X_new = model.vectorizer.transform(new_payload)
-    numerical_prediction = model.model.predict(X_new)
-    values = model.label_encoder.inverse_transform(numerical_prediction)
-    return True if sum(values) > 0 else False
+    def find_min_MSEs_model(self, models):
+        MSEs = [model.MSE for model in models]
+        print("MSEs of models: ", MSEs)
+        index = MSEs.index(min(MSEs))
+        return models[index]
+
+    def detect(self, payloads):
+        models = load_models(self.model_names)
+        model = find_min_MSEs_model(models)
+        return model.predict(payloads)
+
+
+def predict(model, payloads):
+    return model["model"].predict(payloads)
 
 def find_min_MSEs_model(models, model_names):
     MSEs = [model.MSE for model in models]
