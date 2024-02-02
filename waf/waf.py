@@ -5,16 +5,18 @@ from flask import Flask, redirect, request, url_for, jsonify
 import requests
 
 from detect import Detector
+from analysis import analysis
 
 load_dotenv()
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET"])
 def home():
     url = request.url
     payloads = url.split("?")
+
     response = requests.get(f"http://localhost:5000/live?{payloads}")
-    response = requests.get(f"http://localhost:5000/shadow?{payloads}")
+#    response = requests.get(f"http://localhost:5000/shadow?{payloads}")
     return "<p> home"
 
 @app.route("/live", methods=["GET"])
@@ -22,21 +24,26 @@ def live():
     data = request.args.to_dict()
     url = os.getenv("ORIGIN_SERVER")
     detector = Detector()
-    if detector.detect(data.values()):
+    is_malicious = detector.detect(data.values())
+    detector.record()
+    if is_malicious:
         return "<p> bad request"
     return redirect(url)
 
 @app.route("/shadow", methods=["GET"])
 def shadow():
+    # monitor and analysis
     data = request.args.to_dict()
-    detector = Detector()
+    anaysis()
     return "<p> shadow"
 
 @app.route("/test", methods=["GET"])
 def test():
     data = request.args.to_dict()
     detector = Detector()
-    if len(data) == 0 or detector.detect(data.values()):
+    is_malicious = detector.detect(data.values())
+    detector.record()
+    if is_malicious:
         print("malforme payload founded")
         return "<p> bad request"
     print("pass WAF")
