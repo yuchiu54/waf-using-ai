@@ -19,6 +19,7 @@ class Detector:
         if self.payloads == None:
             print("record function take payloads parameter as None value")
 
+        # save the payloads and their prediction results to new_payloads.csv
         for payload, result in zip(self.payloads, self.results):
             with open("../data/new_payloads.csv", "a") as file:
                 file.write(f"{payload},{result}\n")
@@ -27,25 +28,22 @@ class Detector:
 
     def detect(self, payloads):
         self.payloads = payloads
-        # svm
+        # predict payloads using support vector machine
         model, vectorizor, label_encoder = self.svm
         new_X = vectorizor.transform(payloads)
         predict_svm= model.predict(new_X)
 
-        # rf
+        # predict payloads using random forest
         model, vectorizor, label_encoder = self.rf
         new_X = vectorizor.transform(payloads)
         predict_rf = model.predict(new_X)
-        self.results = get_results(predict_svm, predict_rf)
+
+        # if there's any 1 in the results, then it's considered a malformed request
+        self.results = get_final_predictions(predict_svm, predict_rf)
         return any(self.results)
 
-def get_results(lst_a, lst_b):
+def get_final_predictions(lst_a, lst_b):
     if len(lst_a) != len(lst_b):
         print("The lengths of predictions from models are not equal")
         exit()
-
-    results = []
-    for i in range(len(lst_a)):
-        result = 1 if (lst_a[i] + lst_b[i]) > 0 else 0
-        results.append(result)
-    return results
+    return list(map(lambda x, y: 1 if x + y > 0 else 0, lst_a, lst_b))
