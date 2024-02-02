@@ -9,7 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
-def init_rf(df):
+def train_rf(df):
     vectorizer = CountVectorizer()    
     X = vectorizer.fit_transform(df["payload"].values.astype("U"))
 

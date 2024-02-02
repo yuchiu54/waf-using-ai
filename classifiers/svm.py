@@ -4,7 +4,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 
-def init_svm(df):
+def train_svm(df):
     vectorizer = CountVectorizer()    
     X = vectorizer.fit_transform(df["payload"].values.astype("U"))
 
