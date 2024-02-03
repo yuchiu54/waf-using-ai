@@ -12,23 +12,20 @@ app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
 def home():
-    url = request.url
-    payloads = url.split("?")
-
-#    response = requests.get(f"http://localhost:5000/live?{payloads}")
-    response = requests.get(f"https://waf-using-ai.onrender.com/live?{payloads}")
-#    response = requests.get(f"http://localhost:5000/shadow?{payloads}")
-    return "<p> home"
+#    url = request.url
+#    payloads = url.split("?")[1]
+    return redirect(url_for(".live", **request.args))
 
 @app.route("/live", methods=["GET"])
 def live():
     data = request.args.to_dict()
     url = os.getenv("ORIGIN_SERVER")
     detector = Detector()
-    is_malicious = detector.detect(data.values())
-    detector.record()
-    if is_malicious:
-        return "<p> bad request"
+    if data != {}:
+        is_malicious = detector.detect(data.values())
+        detector.record()
+        if is_malicious:
+            return "<p> bad request"
     return redirect(url)
 
 @app.route("/shadow", methods=["GET"])
@@ -45,10 +42,10 @@ def test():
     is_malicious = detector.detect(data.values())
     detector.record()
     if is_malicious:
-        print("malforme payload founded")
+        print("malformed payload founded")
         return "<p> bad request"
     print("pass WAF")
     return "<p> test page"
 
-#if __name__ == "__main__":
-#    app.run(host="0.0.0.0", port=5000, debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
