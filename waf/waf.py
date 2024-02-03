@@ -15,7 +15,8 @@ def home():
     url = request.url
     payloads = url.split("?")
 
-    response = requests.get(f"http://localhost:5000/live?{payloads}")
+#    response = requests.get(f"http://localhost:5000/live?{payloads}")
+    response = requests.get(f"https://waf-using-ai.onrender.com/live?{payloads}")
 #    response = requests.get(f"http://localhost:5000/shadow?{payloads}")
     return "<p> home"
 
